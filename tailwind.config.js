@@ -5,5 +5,5 @@ module.exports = {
       backgroundImage: {},
     },
   },
-  plugins: [],
+  plugins: [require("@tailwindcss/forms")],
 };

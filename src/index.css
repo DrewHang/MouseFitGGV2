@@ -2,16 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
-html {
+html,
+body {
   height: 100%;
+  width: 100%;
 }
 
 body {
   margin: 0;
-  background: black; /* fallback for old browsers */
+  background: #030706; /* fallback for old browsers */
   background-image: url("../public/mousetwo.jpeg");
   background-repeat: no-repeat;
   background-size: 600px;
   background-attachment: fixed;
   background-position: center;
+}
+
+.background-image {
 }
