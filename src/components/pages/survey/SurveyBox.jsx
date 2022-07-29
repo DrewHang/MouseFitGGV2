@@ -1,8 +1,8 @@
 import { Dialog, Transition } from "@headlessui/react";
 import React, { Fragment, useEffect } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { surveyState, surveyNumber, itemSelected } from "./recoil/store.js";
-import { questions } from "./lib/questions.js";
+import { surveyState, surveyNumber, itemSelected } from "../../recoil/store.js";
+import { questions } from "../../utils/questions.js";
 import SurveyRadio from "./SurveyRadio.jsx";
 import SurveyButton from "./SurveyButton.jsx";
 
@@ -50,10 +50,10 @@ function SurveyBox() {
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-slate-800 shadow-lg shadow-slate-800 rounded-2xl">
+              <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-zinc-800 shadow-lg shadow-zinc-800 rounded-2xl">
                 <Dialog.Title
                   as="h3"
-                  className="text-2xl font-medium leading-6 text-sky-200 pt-3 pb-3"
+                  className="text-2xl font-medium leading-6 text-teal-200 pt-3 pb-3"
                 >
                   Question {number + 1} / 4
                 </Dialog.Title>

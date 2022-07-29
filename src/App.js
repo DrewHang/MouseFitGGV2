@@ -1,22 +1,30 @@
-import { Routes, Route } from "react-router-dom";
-import LandingPage from "./components/LandingPage.jsx";
-import Header from "./components/Header.jsx";
-import Login from "./components/Login.jsx";
-import SignUp from "./components/SignUp.jsx";
-import { AuthProvider } from "./contexts/AuthContext";
+import { Route, Routes } from "react-router-dom";
+import LandingPage from "./components/pages/LandingPage.jsx";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Login from "./components/pages/Login.jsx";
+import SignUp from "./components/pages/SignUp.jsx";
+import { AuthProvider } from "./components/contexts/AuthContext";
+import PrivateRoute from "./components/routers/PrivateRoute";
+import PublicRoute from "./components/routers/PublicRoute";
+import Dashboard from "./components/pages/Dashboard.jsx";
 
 function App() {
   return (
-    <div>
+    <>
+      <ToastContainer position="top-right" />
       <AuthProvider>
-        <Header />
         <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<SignUp />} />
+          <Route path="/" element={<PublicRoute component={LandingPage} />} />
+          <Route path="/login" element={<PublicRoute component={Login} />} />
+          <Route path="/signup" element={<PublicRoute component={SignUp} />} />
+          <Route
+            path="/dashboard"
+            element={<PrivateRoute component={Dashboard} />}
+          />
         </Routes>
       </AuthProvider>
-    </div>
+    </>
   );
 }
 

@@ -1,7 +1,11 @@
 import { RadioGroup } from "@headlessui/react";
 import { useRecoilValue, useRecoilState } from "recoil";
-import { surveyNumber, currentFilter, itemSelected } from "./recoil/store.js";
-import { questions } from "./lib/questions.js";
+import {
+  surveyNumber,
+  currentFilter,
+  itemSelected,
+} from "../../recoil/store.js";
+import { questions } from "../../utils/questions.js";
 
 export default function SurveyRadio() {
   const number = useRecoilValue(surveyNumber);
