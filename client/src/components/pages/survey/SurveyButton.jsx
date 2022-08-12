@@ -45,7 +45,10 @@ export default function SurveyButton({
         </button>
         {questionNumber === 3 ? (
           <button
-            onClick={handleData}
+            onClick={async () => {
+              await handleData();
+              await handleSubmit();
+            }}
             className="text-white font-medium inline-flex items-center py-2 px-4 hover:bg-zinc-700 rounded-r-lg"
           >
             <span>Submit</span>

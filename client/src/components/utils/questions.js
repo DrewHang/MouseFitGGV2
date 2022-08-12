@@ -12,8 +12,8 @@ export const questions = [
     questionText: "Wired or Wireless?",
     type: "interface",
     answerOptions: [
-      { answerText: "Wired", value: "wired" },
-      { answerText: "Wireless", value: "wireless" },
+      { answerText: "Wired", value: "Wired" },
+      { answerText: "Wireless", value: "Wireless" },
     ],
   },
   {

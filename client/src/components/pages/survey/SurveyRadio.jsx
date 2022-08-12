@@ -12,6 +12,7 @@ function SurveyRadio({
   handleNext,
   handlePrev,
   mouses,
+  filteredMouse,
   startSetFilteredMouses,
   startSetLoading,
 }) {
@@ -22,7 +23,47 @@ function SurveyRadio({
   const numberOfQuestions = 3;
 
   useEffect(() => {
-    console.log("filter Data", finalFilterData);
+    // Filter By grip [array]
+    if (questionNumber === 1) {
+      const regularFilterGrip = mouses.filter((mouse) =>
+        mouse.grip.includes(filterData.grip)
+      );
+
+      console.log("filter", regularFilterGrip);
+      startSetFilteredMouses(regularFilterGrip);
+    }
+
+    // Filter by interface
+    if (questionNumber === 2) {
+      const filterInterfaceGrip = filteredMouse.filter((mouse) =>
+        mouse.interface.includes(filterData.interface)
+      );
+
+      console.log("filter", filterInterfaceGrip);
+      startSetFilteredMouses(filterInterfaceGrip);
+    }
+
+    if (questionNumber === 3) {
+      const filterWeight = R.filter(
+        (mouse) =>
+          parseInt(mouse.weight.$numberDecimal) >= filterData.weight[0] &&
+          parseInt(mouse.weight.$numberDecimal) <= filterData.weight[1]
+      )(filteredMouse);
+
+      console.log("filter", filterWeight);
+      startSetFilteredMouses(filterWeight);
+
+      if (!R.isNil(filterData.price)) {
+        console.log(filterData.price);
+        const filterPrice = R.filter(
+          (mouse) =>
+            parseInt(mouse.price.$numberDecimal) >= filterData.price[0] &&
+            parseInt(mouse.price.$numberDecimal) <= filterData.price[1]
+        )(filteredMouse);
+        console.log("filter", filterPrice);
+        startSetFilteredMouses(filterPrice);
+      }
+    }
   }, [filterData]);
 
   const handleData = () => {
@@ -36,65 +77,17 @@ function SurveyRadio({
       ...prevState,
       ...newObj,
     }));
-
-    // Filter By grip [array]
-    if (questionNumber === 0) {
-      const filterGrip = mouses.includes(filterData.grip);
-      setFinalFilterData(filterGrip);
-    }
-
-    // Filter by interface [array]
-    if (questionNumber === 1) {
-      const filterInterface = R.filter(() =>
-        mouses.interface.includes(filterData.interface)
-      )(finalFilterData);
-      setFinalFilterData(filterInterface);
-    }
-
-    // Filter by weight
-    if (questionNumber === 2) {
-      const filterWeight = R.filter(
-        (mouse) =>
-          Number(mouse.weight.$numberDecimal) >= filterData.weight[0] &&
-          Number(mouse.weight.$numberDecimal) <= filterData.weight[1]
-      )(finalFilterData);
-
-      setFinalFilterData(filterWeight);
-    }
-
-    if (questionNumber === 3) {
-      const filterPrice = R.filter(
-        (mouse) =>
-          mouse.price.$numberDecimal >= filterData.price[0] &&
-          mouse.price.$numberDecimal <= filterData.price[1]
-      )(finalFilterData);
-
-      setFinalFilterData(filterPrice);
-    }
   };
 
   const handleSubmit = () => {
     startSetLoading(true);
-    // Filter By grip [array]
+    const getRandomInt = (max) => {
+      return Math.floor(Math.random() * max);
+    };
 
-    console.log(mouses[0].weight.$numberDecimal);
+    const randomNumber = getRandomInt(filteredMouse.length - 1);
 
-    const currFilteredData = R.compose(
-      R.filter(() => mouses.grip.includes(filterData.grip)),
-      R.filter(() => mouses.interface.includes(filterData.interface)),
-      R.filter(
-        (mouse) =>
-          Number(mouse.weight.$numberDecimal) >= filterData.weight[0] &&
-          Number(mouse.weight.$numberDecimal) <= filterData.weight[1]
-      )
-      // R.filter(
-      //   (mouse) =>
-      //     mouse.price.$numberDecimal >= filterData.price[0] &&
-      //     mouse.price.$numberDecimal <= filterData.price[1]
-      // )
-    )(mouses);
-
-    console.log("mouses", currFilteredData);
+    console.log(randomNumber);
   };
 
   return (
@@ -177,6 +170,7 @@ const mapStateToProps = (state) => ({
   loading: state.loading,
   survey: state.survey,
   mouses: state.mouses,
+  filteredMouse: state.filteredMouse,
 });
 
 export default connect(mapStateToProps, {
