@@ -1,7 +1,7 @@
 export const questions = [
   {
     questionText: "What is your preferred mouse grip?",
-    type: "mouseGrip",
+    type: "grip",
     answerOptions: [
       { answerText: "Claw", value: "Claw" },
       { answerText: "Fingertip", value: "Fingertip" },
@@ -20,18 +20,18 @@ export const questions = [
     questionText: "Light, Medium, or Heavy Weight?",
     type: "weight",
     answerOptions: [
-      { answerText: "Light", value: [0, 80] },
-      { answerText: "Medium", value: [80, 120] },
-      { answerText: "Heavy", value: [120, 1000] },
+      { answerText: "Light", value: [0, 60] },
+      { answerText: "Medium", value: [61, 80] },
+      { answerText: "Heavy", value: [81, 1000] },
     ],
   },
   {
-    questionText: "Small, Medium, or Large Mouse Size?",
-    type: "mouseSize",
+    questionText: "What is your budget?",
+    type: "price",
     answerOptions: [
-      { answerText: "Small", value: [0, 292800] },
-      { answerText: "Medium", value: [292800, 357000] },
-      { answerText: "Large", value: [357000, 100000000] },
+      { answerText: "Less Than $39.99", value: [0, 39.99] },
+      { answerText: "$40 - $69.99", value: [40, 69.99] },
+      { answerText: "over $70", value: [70, 100000000] },
     ],
   },
 ];

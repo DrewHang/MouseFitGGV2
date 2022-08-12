@@ -1,15 +1,22 @@
-import React from "react";
-import { useRecoilState } from "recoil";
-import { surveyState } from "../recoil/store.js";
+import React, { useEffect } from "react";
+import { connect } from "react-redux";
+import { startSetSurvey } from "../../actions/survey.js";
+import { startSetMouses } from "../../actions/mouses.js";
 import SurveyBox from "./survey/SurveyBox.jsx";
 import Header from "../common/Header";
 
-function LandingPage() {
-  const [isOpen, setIsOpen] = useRecoilState(surveyState);
+function LandingPage({ startSetSurvey, survey, startSetMouses }) {
+  useEffect(() => {
+    const fn = async () => {
+      const result = await startSetMouses();
+      console.log(result);
+    };
+    fn();
+  }, []);
 
   return (
     <div
-      className={isOpen ? "blur-sm" : ""}
+      className={survey ? "blur-sm" : ""}
       style={{ height: "100vh", display: "relative" }}
     >
       <Header />
@@ -28,7 +35,7 @@ function LandingPage() {
       >
         <button
           onClick={() => {
-            setIsOpen(!isOpen);
+            startSetSurvey(!survey);
           }}
           className="p-2 text-xl text-white bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 hover:bg-gradient-to-br focus:ring-4 focus:ring-cyan-300 dark:focus:ring-cyan-800 shadow-lg shadow-cyan-500/50 dark:shadow-lg dark:shadow-cyan-800/80 rounded-lg"
         >
@@ -40,4 +47,13 @@ function LandingPage() {
   );
 }
 
-export default LandingPage;
+const mapStateToProps = (state) => ({
+  loading: state.loading,
+  survey: state.survey,
+  mouses: state.mouses,
+});
+
+export default connect(mapStateToProps, {
+  startSetSurvey,
+  startSetMouses,
+})(LandingPage);

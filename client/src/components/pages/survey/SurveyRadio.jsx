@@ -1,32 +1,109 @@
+import { useState, useEffect } from "react";
+import { connect } from "react-redux";
 import { RadioGroup } from "@headlessui/react";
-import { useRecoilValue, useRecoilState } from "recoil";
-import {
-  surveyNumber,
-  currentFilter,
-  itemSelected,
-} from "../../recoil/store.js";
+import * as R from "ramda";
 import { questions } from "../../utils/questions.js";
+import SurveyButton from "./SurveyButton";
+import { startSetFilteredMouses } from "../../../actions/filteredMouse.js";
+import { startSetLoading } from "../../../actions/loading.js";
 
-export default function SurveyRadio() {
-  const number = useRecoilValue(surveyNumber);
-  const [selected, setSelected] = useRecoilState(currentFilter);
-  const [isSelected, setIsSelected] = useRecoilState(itemSelected);
+function SurveyRadio({
+  questionNumber,
+  handleNext,
+  handlePrev,
+  mouses,
+  startSetFilteredMouses,
+  startSetLoading,
+}) {
+  const [selected, setSelected] = useState("");
+  const [filterData, setFilterData] = useState({});
+  const [finalFilterData, setFinalFilterData] = useState([]);
 
-  const buttonClicked = () => {
-    setIsSelected(true);
+  const numberOfQuestions = 3;
+
+  useEffect(() => {
+    console.log("filter Data", finalFilterData);
+  }, [filterData]);
+
+  const handleData = () => {
+    const questionCategory = questions[questionNumber].type;
+
+    const newObj = {};
+
+    newObj[questionCategory] = selected;
+
+    setFilterData((prevState) => ({
+      ...prevState,
+      ...newObj,
+    }));
+
+    // Filter By grip [array]
+    if (questionNumber === 0) {
+      const filterGrip = mouses.includes(filterData.grip);
+      setFinalFilterData(filterGrip);
+    }
+
+    // Filter by interface [array]
+    if (questionNumber === 1) {
+      const filterInterface = R.filter(() =>
+        mouses.interface.includes(filterData.interface)
+      )(finalFilterData);
+      setFinalFilterData(filterInterface);
+    }
+
+    // Filter by weight
+    if (questionNumber === 2) {
+      const filterWeight = R.filter(
+        (mouse) =>
+          Number(mouse.weight.$numberDecimal) >= filterData.weight[0] &&
+          Number(mouse.weight.$numberDecimal) <= filterData.weight[1]
+      )(finalFilterData);
+
+      setFinalFilterData(filterWeight);
+    }
+
+    if (questionNumber === 3) {
+      const filterPrice = R.filter(
+        (mouse) =>
+          mouse.price.$numberDecimal >= filterData.price[0] &&
+          mouse.price.$numberDecimal <= filterData.price[1]
+      )(finalFilterData);
+
+      setFinalFilterData(filterPrice);
+    }
+  };
+
+  const handleSubmit = () => {
+    startSetLoading(true);
+    // Filter By grip [array]
+
+    console.log(mouses[0].weight.$numberDecimal);
+
+    const currFilteredData = R.compose(
+      R.filter(() => mouses.grip.includes(filterData.grip)),
+      R.filter(() => mouses.interface.includes(filterData.interface)),
+      R.filter(
+        (mouse) =>
+          Number(mouse.weight.$numberDecimal) >= filterData.weight[0] &&
+          Number(mouse.weight.$numberDecimal) <= filterData.weight[1]
+      )
+      // R.filter(
+      //   (mouse) =>
+      //     mouse.price.$numberDecimal >= filterData.price[0] &&
+      //     mouse.price.$numberDecimal <= filterData.price[1]
+      // )
+    )(mouses);
+
+    console.log("mouses", currFilteredData);
   };
 
   return (
-    <div className="w-full px-1 py-9">
+    <div className="w-full px-1 pt-9">
       <div className="w-full max-w-md mx-auto">
-        <RadioGroup
-          value={selected}
-          onChange={setSelected}
-          onClick={buttonClicked}
-        >
+        <RadioGroup value={selected} onChange={setSelected}>
           <RadioGroup.Label className="sr-only">Mouse Options</RadioGroup.Label>
           <div className="space-y-2">
-            {questions[number].answerOptions.map((option, index) => (
+            {questions[questionNumber].answerOptions.map((option, index) => (
               <RadioGroup.Option
                 key={index}
                 value={option.value}
@@ -70,6 +147,13 @@ export default function SurveyRadio() {
           </div>
         </RadioGroup>
       </div>
+      <SurveyButton
+        questionNumber={questionNumber}
+        handleNext={handleNext}
+        handlePrev={handlePrev}
+        handleSubmit={handleSubmit}
+        handleData={handleData}
+      />
     </div>
   );
 }
@@ -88,3 +172,14 @@ function CheckIcon(props) {
     </svg>
   );
 }
+
+const mapStateToProps = (state) => ({
+  loading: state.loading,
+  survey: state.survey,
+  mouses: state.mouses,
+});
+
+export default connect(mapStateToProps, {
+  startSetFilteredMouses,
+  startSetLoading,
+})(SurveyRadio);

@@ -1,24 +1,34 @@
 import { Dialog, Transition } from "@headlessui/react";
-import React, { Fragment, useEffect } from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { surveyState, surveyNumber, itemSelected } from "../../recoil/store.js";
+import React, { Fragment, useEffect, useState } from "react";
+import { connect } from "react-redux";
 import { questions } from "../../utils/questions.js";
 import SurveyRadio from "./SurveyRadio.jsx";
 import SurveyButton from "./SurveyButton.jsx";
+import { startSetSurvey } from "../../../actions/survey.js";
 
-function SurveyBox() {
-  const [isOpen, setIsOpen] = useRecoilState(surveyState);
-  const [number, setNumber] = useRecoilState(surveyNumber);
-  const selected = useRecoilValue(itemSelected);
+function SurveyBox({ survey, startSetSurvey }) {
+  const [questionNumber, setQuestionNumber] = useState(0);
+
+  const handleNext = () => {
+    if (questionNumber < questions.length - 1) {
+      setQuestionNumber((prev) => prev + 1);
+    }
+  };
+
+  const handlePrev = () => {
+    if (questionNumber >= 1) {
+      setQuestionNumber((prev) => prev - 1);
+    }
+  };
 
   return (
     <>
-      <Transition appear show={isOpen} as={Fragment}>
+      <Transition appear show={survey} as={Fragment}>
         <Dialog
           as="div"
           className="fixed inset-0 z-10 overflow-y-auto"
           onClose={() => {
-            setIsOpen(false);
+            startSetSurvey(false);
           }}
         >
           <div className="min-h-screen px-4 text-center">
@@ -55,15 +65,18 @@ function SurveyBox() {
                   as="h3"
                   className="text-2xl font-medium leading-6 text-teal-200 pt-3 pb-3"
                 >
-                  Question {number + 1} / 4
+                  Question {questionNumber + 1} / 4
                 </Dialog.Title>
                 <div className="mt-2">
                   <p className="text-xl text-white">
-                    {questions[number].questionText}
+                    {questions[questionNumber].questionText}
                   </p>
                 </div>
-                <SurveyRadio />
-                {selected && <SurveyButton />}
+                <SurveyRadio
+                  questionNumber={questionNumber}
+                  handleNext={handleNext}
+                  handlePrev={handlePrev}
+                />
               </div>
             </Transition.Child>
           </div>
@@ -73,4 +86,12 @@ function SurveyBox() {
   );
 }
 
-export default SurveyBox;
+const mapStateToProps = (state) => ({
+  loading: state.loading,
+  survey: state.survey,
+  mouses: state.mouses,
+});
+
+export default connect(mapStateToProps, {
+  startSetSurvey,
+})(SurveyBox);
