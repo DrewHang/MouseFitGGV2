@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import { connect } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { RadioGroup } from "@headlessui/react";
 import * as R from "ramda";
 import { questions } from "../../utils/questions.js";
 import SurveyButton from "./SurveyButton";
 import { startSetFilteredMouses } from "../../../actions/filteredMouse.js";
 import { startSetLoading } from "../../../actions/loading.js";
+import { startSetMouse } from "../../../actions/mouse";
 
 function SurveyRadio({
   questionNumber,
@@ -13,6 +15,7 @@ function SurveyRadio({
   handlePrev,
   mouses,
   filteredMouse,
+  startSetMouse,
   startSetFilteredMouses,
   startSetLoading,
 }) {
@@ -79,6 +82,8 @@ function SurveyRadio({
     }));
   };
 
+  let navigate = useNavigate();
+
   const handleSubmit = () => {
     startSetLoading(true);
     const getRandomInt = (max) => {
@@ -87,7 +92,8 @@ function SurveyRadio({
 
     const randomNumber = getRandomInt(filteredMouse.length - 1);
 
-    console.log(randomNumber);
+    startSetMouse(filteredMouse[randomNumber]);
+    navigate("../results", { replace: true });
   };
 
   return (
@@ -176,4 +182,5 @@ const mapStateToProps = (state) => ({
 export default connect(mapStateToProps, {
   startSetFilteredMouses,
   startSetLoading,
+  startSetMouse,
 })(SurveyRadio);

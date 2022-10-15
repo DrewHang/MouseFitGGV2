@@ -9,6 +9,7 @@ import { AuthProvider } from "./components/contexts/AuthContext";
 import PrivateRoute from "./components/routers/PrivateRoute";
 import PublicRoute from "./components/routers/PublicRoute";
 import Dashboard from "./components/pages/Dashboard.jsx";
+import ResultsPage from "./components/pages/results/ResultsPage.jsx";
 import configureStore from "./store/configureStore";
 
 const store = configureStore();
@@ -25,6 +26,10 @@ function App() {
             <Route
               path="/signup"
               element={<PublicRoute component={SignUp} />}
+            />
+            <Route
+              path="/results"
+              element={<PublicRoute component={ResultsPage} />}
             />
             <Route
               path="/dashboard"
